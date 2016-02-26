@@ -1,19 +1,24 @@
-
-var SymbolRow = React.createClass({
-  render: function() {
+function formatThousands(num){
+  return num > 999 ? (num/1000).toFixed(1) + 'k' : num
+}
+function formatDecimal(num){
+  return Math.round(num*100)/100;
+}
+//Pure functions, aka return the same result given the same arugements.
+var SymbolRow = function(props){
     return (
       <tr>
-        <td>{this.props.symbol.Symbol} {this.props.symbol.Name}</td>
-        <td>{parseFloat(this.props.symbol.Change)}</td>
+        <td>{props.Symbol} {props.symbol.Name}</td>
+        <td>{formatDecimal(props.symbol.LastPrice)} </td>
+        <td>{formatDecimal(props.symbol.Change)} ({formatDecimal(props.symbol.ChangePercent)})%</td>
+        <td>{formatThousands(props.symbol.MarketCap)}</td>
       </tr>
     );
-  }
-});
+}
 
-var SymbolTable = React.createClass({
-  render: function() {
+var SymbolTable = function(props){
     var rows = [];
-    this.props.symbols.forEach(function(symbol){
+    props.symbols.forEach(function(symbol){
       rows.push(<SymbolRow symbol={symbol} key={symbol.Name} />);
     }.bind(this));
 
@@ -22,21 +27,24 @@ var SymbolTable = React.createClass({
         <thead>
           <tr>
             <th>Name</th>
-            <th>Change in Price</th>
+            <th>Price></th>
+            <th>Change</th>
+            <th>Volume</th>
           </tr>
         </thead>
-        <tbody>{rows}</tbody>
+        <tbody>
+          {rows}
+        </tbody>
       </table>
     );
-  }
+}
 
-});
 var FilterableSymbolTable = React.createClass({
   getInitialState: function() {
     return {
       symbols: [],
       newSymbol: '',
-      symbolsToSearch: ['MSFT', 'AAPL']
+      symbolsToSearch: ['MSFT','AAPL','IBM','GOOG','FB','YHOO']
     };
   },
   componentDidMount: function() {
